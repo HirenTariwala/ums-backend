@@ -17,6 +17,7 @@ function load(req, res, next, id) {
  * @returns {User}
  */
 function get(req, res) {
+  debugger;
   return res.json(req.user.safeModel());
 }
 
@@ -67,9 +68,36 @@ function list(req, res, next) {
  */
 function destroy(req, res, next) {
   const { user } = req;
-  user.destroy()
-    .then(deletedUser => res.json(deletedUser.safeModel()))
+  user.isDelete = 1;
+  user.save()
+    .then(savedUser => res.json(savedUser.safeModel()))
     .catch(e => next(e));
+}
+
+
+/**
+ * Activate user.
+ * @returns {User}
+ */
+
+/**
+ * Update user password.
+ * @returns {User}
+ */
+function updatePassword(req, res, next) {
+  const { user } = req;
+  const userObj = new User({password:user.password});
+  if (userObj.validPassword(req.body.oldPassword)){
+    const genPass = userObj.generatePassword(req.body.newPassword)
+    user.password = genPass.hashPassword;
+    user.salt = genPass.salt;
+    user.save()
+    .then(savedUser => res.json(savedUser.safeModel()))
+    .catch(e => next(e));
+  }
+  else{
+    res.json({message:'old password not match'});
+  }
 }
 
 module.exports = {
@@ -79,4 +107,5 @@ module.exports = {
   update,
   list,
   destroy,
+  updatePassword,
 };

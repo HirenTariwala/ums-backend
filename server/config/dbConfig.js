@@ -2,15 +2,15 @@ module.exports = {
   development: {
     username: 'root',
     password: 'root',
-    database: 'node-express-sequelize-starter-dev',
+    database: 'TestDb',
     host: '127.0.0.1',
     port: 3306,
     dialect: 'mysql',
   },
   production: {
     username: 'root',
-    password: null,
-    database: 'node-express-sequelize-starter-prod',
+    password: 'root',
+    database: 'TestDb',
     host: '127.0.0.1',
     port: 3306,
     dialect: 'mysql',

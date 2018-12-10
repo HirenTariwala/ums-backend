@@ -16,6 +16,13 @@ const paramValidation = {
       userId: Joi.string().hex().required(),
     },
   },
+  updateUserPassword : {
+    body: {
+      oldPassword: Joi.string().required(),
+      newPassword: Joi.string().required()
+    },
+  },
+  
 };
 
 router.route('/')
@@ -33,8 +40,20 @@ router.route('/:userId')
   /** PUT /api/users/:userId - Update user */
   .put(validate(paramValidation.updateUser), userCtrl.update)
 
+  
+  
+
   /** DELETE /api/users/:userId - Delete user */
   .delete(userCtrl.destroy);
+
+  
+router.route('/updatePassword/:userId')
+
+  .get(userCtrl.get)
+
+  /** PUT /api/users/updatePassword/:userId - Update user password*/
+  .put(validate(paramValidation.updateUserPassword),userCtrl.updatePassword)
+
 
 /** Load user when API with userId route parameter is hit */
 router.param('userId', userCtrl.load);

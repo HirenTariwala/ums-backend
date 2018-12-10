@@ -13,13 +13,33 @@ module.exports = {
       },
       firstName: {
         type: Sequelize.STRING,
+        allowNull : false
       },
       lastName: {
         type: Sequelize.STRING,
+        allowNull : false
+      },
+      salt: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       password: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      role:{
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+      },
+      isActive:{
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+        defaultValue : 0
+      },
+      isDelete:{
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+        defaultValue : 0
       },
       createdAt: {
         allowNull: false,

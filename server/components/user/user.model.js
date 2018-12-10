@@ -21,13 +21,33 @@ const UserSchema = {
   },
   firstName: {
     type: Sequelize.STRING,
+    allowNull : false
   },
   lastName: {
     type: Sequelize.STRING,
+    allowNull : false
+  },
+  salt: {
+    type: Sequelize.STRING,
+    allowNull: false,
   },
   password: {
     type: Sequelize.STRING,
     allowNull: false,
+  },
+  role:{
+    type: Sequelize.SMALLINT,
+    allowNull: false,
+  },
+  isActive:{
+    type: Sequelize.SMALLINT,
+    allowNull: false,
+    defaultValue : 0
+  },
+  isDelete:{
+    type: Sequelize.SMALLINT,
+    allowNull: false,
+    defaultValue : 0
   },
   createdAt: {
     allowNull: false,
@@ -83,6 +103,23 @@ User.getByEmail = function getByEmail(email) {
   });
 };
 
+User.getByEmailAndClientId = function getByEmailAndClientId(email,ClientId) {
+  return this.findOne({
+    where: {
+      email,
+      id:ClientId
+    },
+  });
+};
+
+User.getEmailAndRole = function getByEmailAndClientId(email,role) {
+  return this.findOne({
+    where: {
+      email,
+      role
+    },
+  });
+};
 /**
  * Methods
  */
@@ -93,7 +130,9 @@ User.getByEmail = function getByEmail(email) {
  * @returns {string} - hashed password
  */
 User.prototype.generatePassword = function generatePassword(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+  const salt = bcrypt.genSaltSync(8);
+  const hashPassword = bcrypt.hashSync(password, salt, null);
+  return {salt,hashPassword};
 };
 
 /**
@@ -110,7 +149,7 @@ User.prototype.validPassword = function validPassword(password) {
  * @returns {object} - Public information of user.
  */
 User.prototype.safeModel = function safeModel() {
-  return _.omit(this.toJSON(), ['password']);
+  return _.omit(this.toJSON(), ['password','salt','isActive','isDelete','createdAt','updatedAt']);
 };
 
 /**
