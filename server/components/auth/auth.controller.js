@@ -95,6 +95,7 @@ function createNewPassword(req, res, next){
     const genPass = userObj.generatePassword(req.body.newPassword)
     foundUser.password = genPass.hashPassword;
     foundUser.salt = genPass.salt;
+    foundUser.isActive = 1;
     return foundUser.save();
   }).then(savedUser => res.json(savedUser.safeModel()))
   .catch(e => next(e));  
