@@ -22,6 +22,12 @@ const paramValidation = {
       newPassword: Joi.string().required()
     },
   },
+  assignAdmin : {
+    body: {
+      AdminId: Joi.number().required(),
+      ClientId: Joi.number().required()
+    },
+  }
   
 };
 
@@ -53,6 +59,16 @@ router.route('/updatePassword/:userId')
 
   /** PUT /api/users/updatePassword/:userId - Update user password*/
   .put(validate(paramValidation.updateUserPassword),userCtrl.updatePassword)
+
+router.route('/assignAdmin')
+
+  /** PUT /api/users/assignAdmin/ - Assign admin for client user*/
+  .post(validate(paramValidation.assignAdmin),userCtrl.assignAdmin)
+
+router.route('/removeAdmin')
+
+  /** PUT /api/users/removeAdmin/ - Remove admin for client user*/
+  .post(validate(paramValidation.assignAdmin),userCtrl.removeAdmin)
 
 
 /** Load user when API with userId route parameter is hit */

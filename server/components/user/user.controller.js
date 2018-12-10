@@ -1,4 +1,5 @@
 const User = require('./user.model');
+const AdminClient = require('../AdminClientRelation/AdminClientRelation.model');
 
 /**
  * Load user and append to req.
@@ -100,6 +101,24 @@ function updatePassword(req, res, next) {
   }
 }
 
+function assignAdmin(req,res,next){
+  const adminClient = new AdminClient(req.body);
+  adminClient.save()
+    .then(adminClient => res.json({message:adminClient}));
+}
+
+function removeAdmin(req,res,next){
+  const adminClient = new AdminClient(req.body);
+  debugger
+
+  adminClient.get(adminClient.AdminId,adminClient.ClientId).then((res)=>{
+      debugger;
+  });
+
+  
+ // adminClient.removeAdmin(adminClient.AdminId,adminClient.ClientId).then((removeAdmin)=>res.json({message:removeAdmin}))
+}
+
 module.exports = {
   load,
   get,
@@ -108,4 +127,6 @@ module.exports = {
   list,
   destroy,
   updatePassword,
+  assignAdmin,
+  removeAdmin
 };

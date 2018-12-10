@@ -4,8 +4,6 @@ const User = require('../user/user.model');
 const APIError = require('../../helpers/APIError');
 const config = require('../../config');
 const nodemailer = require('nodemailer');
-const userCntrl = require('../user/user.controller');
-
 
 /**
  * Returns jwt token and user details if valid email and password are provided
