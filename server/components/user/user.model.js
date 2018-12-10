@@ -81,6 +81,7 @@ User.get = function get(id) {
     });
 };
 
+
 /**
  * List users in order of 'id'.
  * @param {number} skip - Number of users to be skipped.
@@ -99,6 +100,17 @@ User.getByEmail = function getByEmail(email) {
   return this.findOne({
     where: {
       email,
+    },
+  });
+};
+
+User.getAllByrole = function getAllByrole(role) {
+  debugger
+  console.log(this);
+  return this.findAll({
+    where: {
+      role,
+      isActive:1
     },
   });
 };

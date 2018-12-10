@@ -107,6 +107,20 @@ function assignAdmin(req,res,next){
     .then(adminClient => res.json({message:adminClient}));
 }
 
+function getAllAdmins (req,res,next) {
+  console.log('in');
+   return User.getAllByrole(2).then((adminList)=>{
+        return res.json({"admins":adminList.map((o)=>o.safeModel())});
+    })
+}
+
+function getAllClients (req,res,next) {
+  console.log('in');
+   return User.getAllByrole(3).then((adminList)=>{
+        return res.json({"clients":adminList.map((o)=>o.safeModel())});
+    })
+}
+
 function removeAdmin(req,res,next){
   const adminClient = new AdminClient(req.body);
   debugger
@@ -128,5 +142,7 @@ module.exports = {
   destroy,
   updatePassword,
   assignAdmin,
-  removeAdmin
+  removeAdmin,
+  getAllAdmins,
+  getAllClients
 };

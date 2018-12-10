@@ -38,14 +38,4 @@ AdminClientRelation.removeAdmin =  function removeAdmin(AdminId,ClientId){
    })
 }
 
-AdminClientRelations.getRelation = function getRelation(AdminId,ClientId) {
-  debugger;
-  return this.findOne({
-    where : {
-      AdminId,
-      ClientId
-     }
-  })
-};
-
 module.exports = AdminClientRelation;

@@ -46,12 +46,14 @@ router.route('/:userId')
   /** PUT /api/users/:userId - Update user */
   .put(validate(paramValidation.updateUser), userCtrl.update)
 
-  
-  
-
   /** DELETE /api/users/:userId - Delete user */
   .delete(userCtrl.destroy);
 
+router.route('/:userId/getAllAdmins')
+  .get(userCtrl.getAllAdmins)
+
+router.route('/:userId/getAllClients')
+  .get(userCtrl.getAllClients)
   
 router.route('/updatePassword/:userId')
 
