@@ -47,7 +47,7 @@ function login(req, res, next) {
  */
 function register(req, res, next) {
   const user = new User(req.body);
-  User.getEmailAndRole(req.body.email)
+  User.getEmailAndRole(req.body.email,req.body.role)
     .then((foundUser) => {
       if (foundUser) {
         return Promise.reject(new APIError('Email must be unique', httpStatus.CONFLICT, true));
