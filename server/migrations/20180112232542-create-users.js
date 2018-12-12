@@ -7,10 +7,6 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       firstName: {
         type: Sequelize.STRING,
         allowNull : false
@@ -18,6 +14,10 @@ module.exports = {
       lastName: {
         type: Sequelize.STRING,
         allowNull : false
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       salt: {
         type: Sequelize.STRING,
@@ -40,6 +40,10 @@ module.exports = {
         type: Sequelize.SMALLINT,
         allowNull: false,
         defaultValue : 0
+      },
+      ClientId :{
+        type: Sequelize.BIGINT,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

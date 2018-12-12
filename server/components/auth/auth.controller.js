@@ -4,6 +4,8 @@ const User = require('../user/user.model');
 const APIError = require('../../helpers/APIError');
 const config = require('../../config');
 const nodemailer = require('nodemailer');
+const VyakarAdmins = require('..//vyakarAdmin/vyakarAdmin.model');
+
 
 /**
  * Returns jwt token and user details if valid email and password are provided
@@ -23,7 +25,7 @@ function login(req, res, next) {
         return next(err);
       }
       if (!foundUser.validPassword(req.body.password)) {
-        const err = new APIError('User email and password combination do not match', httpStatus.UNAUTHORIZED, true);
+        const err = new APIError('Email or Password wrong', httpStatus.UNAUTHORIZED, true);
         return next(err);
       }
       const token = jwt.sign(foundUser.safeModel(), config.jwtSecret, {
@@ -47,10 +49,10 @@ function login(req, res, next) {
  */
 function register(req, res, next) {
   const user = new User(req.body);
-  User.getEmailAndRole(req.body.email,req.body.role)
+  User.getByEmailRoleAndClientId(req.body.email,req.body.role,req.body.ClientId)
     .then((foundUser) => {
       if (foundUser) {
-        return Promise.reject(new APIError('Email must be unique', httpStatus.CONFLICT, true));
+        return Promise.reject(new APIError('User already exist!', httpStatus.CONFLICT, true));
       }
       user.password = 'WrongPassword';
       user.salt = 'WrongPassword';
@@ -63,18 +65,17 @@ function register(req, res, next) {
       sendMail(req,'Verify your account',token);
       return res.json({
           token,
-          message:'Mail Sent'
+          success:'Mail Sent'
        });
     })
     .catch(e => next(e));
 }
 
 function createLinkfornewPassword(req,res,next){
-  debugger;
-  User.getByEmailAndClientId(req.body.email,req.body.ClientId)
+  User.getByEmailRoleAndClientId(req.body.email,req.body.role,req.body.ClientId)
     .then((foundUser) => {
       if (!foundUser) {
-        return Promise.reject(new APIError('Email not found', httpStatus.CONFLICT, true));
+        return Promise.reject(new APIError('User not found', httpStatus.CONFLICT, true));
       }
       const token = jwt.sign(foundUser.safeModel(), config.jwtSecret, {
         expiresIn: config.jwtExpiresIn,
@@ -82,7 +83,7 @@ function createLinkfornewPassword(req,res,next){
       sendMail(req,'Create new password',token);
       return res.json({
         token,
-        message:'Email Sent'
+        success:'Email Sent'
       });
     })
     .catch(e => next(e));
@@ -90,7 +91,7 @@ function createLinkfornewPassword(req,res,next){
 
 function createNewPassword(req, res, next){
   const user = jwt.verify(req.body.token, config.jwtSecret);
-  User.getByEmailAndClientId(user.email,user.id).then((foundUser)=>{
+  User.getByEmailRoleAndClientId(user.email,user.role,user.ClientId).then((foundUser)=>{
     const userObj = new User(foundUser);
     const genPass = userObj.generatePassword(req.body.newPassword)
     foundUser.password = genPass.hashPassword;
@@ -100,6 +101,48 @@ function createNewPassword(req, res, next){
   }).then(savedUser => res.json(savedUser.safeModel()))
   .catch(e => next(e));  
 } 
+
+function createNewPasswordVyakar(req,res,next){
+  const vyakar = jwt.verify(req.body.token, config.jwtSecret);
+  if(vyakar.role === "VykarAdmin"){
+    VyakarAdmins.getVyakarByEmail(vyakar.email).then((foundUser)=>{
+        const userObj = new VyakarAdmins(foundUser);
+        const genPass = userObj.generatePassword(req.body.newPassword)
+        foundUser.password = genPass.hashPassword;
+        foundUser.salt = genPass.salt;
+        foundUser.isActive = 1;
+        return foundUser.save();
+      }).then(savedUser => res.json(savedUser.safeModel()))
+      .catch(e => next(e));
+  }else{
+      return res.json({
+          message:'Not authorized user!'
+      })
+  }
+    
+}
+
+function vyakarLogin(req,res,next){
+  VyakarAdmins.getVyakarByEmailWithActive(req.body.email).then((foundVyakar)=>{
+  if(!foundVyakar){
+      return Promise.reject(new APIError('User not exist!', httpStatus.CONFLICT, true));
+  }
+  if(!foundVyakar.validPassword(req.body.password)){
+      const err = new APIError('Email or Password wrong', httpStatus.UNAUTHORIZED, true);
+      return next(err);
+  }
+  const vyakar = foundVyakar.safeModel();
+  vyakar.role = "VykarAdmin";
+  const token =  jwt.sign(vyakar, config.jwtSecret, {
+      expiresIn: config.jwtExpiresIn,
+    });
+  return res.json({
+      token,
+      user:vyakar
+  });
+  })
+  .catch(e => next(e))
+}
 
 function sendMail(req,subject,secret){
   const transporter = nodemailer.createTransport({
@@ -126,4 +169,4 @@ function sendMail(req,subject,secret){
   });
 }
 
-module.exports = { login, register , createNewPassword ,createLinkfornewPassword };
+module.exports = { login, register , createNewPassword ,createLinkfornewPassword , vyakarLogin , createNewPasswordVyakar};

@@ -15,10 +15,6 @@ const UserSchema = {
     primaryKey: true,
     autoIncrement: true,
   },
-  email: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
   firstName: {
     type: Sequelize.STRING,
     allowNull : false
@@ -26,6 +22,10 @@ const UserSchema = {
   lastName: {
     type: Sequelize.STRING,
     allowNull : false
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
   },
   salt: {
     type: Sequelize.STRING,
@@ -48,6 +48,10 @@ const UserSchema = {
     type: Sequelize.SMALLINT,
     allowNull: false,
     defaultValue : 0
+  },
+  ClientId :{
+    type: Sequelize.BIGINT,
+    allowNull: false,
   },
   createdAt: {
     allowNull: false,
@@ -104,27 +108,55 @@ User.getByEmail = function getByEmail(email) {
   });
 };
 
-User.getAllByrole = function getAllByrole(role) {
-  debugger
-  console.log(this);
+User.getAllByrole = function getAllByrole(role,ClientId) {
   return this.findAll({
     where: {
       role,
+      ClientId,
       isActive:1
     },
   });
 };
 
-User.getByEmailAndClientId = function getByEmailAndClientId(email,ClientId) {
+User.getByEmailAndClientId = function getByEmailAndClientId(email,ClientId){
   return this.findOne({
     where: {
       email,
-      id:ClientId
+      ClientId
+    },
+  });
+}
+
+User.getAllUserRolewiseByClientId = function getAllUserRolewiseByClientId(role,ClientId){
+  return this.findAll({
+    where:{
+      role,
+      ClientId,
+      isActive : 1
+    }
+  })
+}
+
+User.getAllUserByClientId = function getAllUserByClientId(ClientId){
+  return this.findAll({
+    where :{
+      ClientId,
+      isActive : 1
+    }
+  })
+}
+
+User.getByEmailRoleAndClientId = function getByEmailRoleAndClientId(email,role,ClientId) {
+  return this.findOne({
+    where: {
+      email,
+      role,
+      ClientId
     },
   });
 };
 
-User.getEmailAndRole = function getByEmailAndClientId(email,role) {
+User.getEmailAndRole = function getEmailAndRole(email,role) {
   return this.findOne({
     where: {
       email,

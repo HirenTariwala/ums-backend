@@ -17,11 +17,13 @@ const paramValidation = {
       email: Joi.string().email().required(),
       firstName: Joi.string().required(),
       lastName: Joi.string().required(),
+      ClientId : Joi.number().required(),
       role : Joi.number().required()
     },
   },
   createNewPassword : {
     body :{ 
+      token : Joi.string().required(),
       newPassword: Joi.string().required(),
     },
   },
@@ -29,6 +31,12 @@ const paramValidation = {
     body : { 
       email: Joi.string().email().required()
     }
+  },
+  vyakarLogin : {
+    body: {
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    },
   }
 };
 
@@ -44,8 +52,16 @@ router.route('/createNewPassword')
   /** PUT /api/auth/createNewPassword - Create new password for user*/
   .put(validate(paramValidation.createNewPassword),authCtrl.createNewPassword)
 
+router.route('/vyakarLogin')
+  /** PUT /api/auth/createNewPassword - Create new password for user*/
+  .post(validate(paramValidation.vyakarLogin),authCtrl.vyakarLogin)
+
 router.route('/createLinkfornewPassword')
   /** PUT /api/auth/createLinkfornewPassword - Create link new password for user*/
   .post(validate(paramValidation.createLinkfornewPassword),authCtrl.createLinkfornewPassword)
+
+router.route('/createNewPasswordVyakar')
+  /** PUT /api/auth/createNewPassword - Create new password for user*/
+  .put(validate(paramValidation.createNewPassword),authCtrl.createNewPasswordVyakar) 
 
 module.exports = router;
