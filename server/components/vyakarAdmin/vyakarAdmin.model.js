@@ -79,6 +79,10 @@ VyakarAdmins.getVyakarByEmailWithActive = function getVyakarByEmailWithActive(em
     })
 }
 
+VyakarAdmins.getAllVyakar = function getAllVyakar(){
+    return this.findAll();
+}
+
 VyakarAdmins.prototype.generatePassword = function generatePassword(password) {
     const salt = bcrypt.genSaltSync(8);
     const hashPassword = bcrypt.hashSync(password, salt, null);

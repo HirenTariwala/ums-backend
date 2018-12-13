@@ -267,6 +267,21 @@ function updatePassword(req,res,next){
     }
 }
 
+function getAllVyakar(req,res,next){
+    if(res.locals.session.role === "VykarAdmin"){
+        VyakarAdmins.getAllVyakar().then((allVyakar)=>{
+            return res.json({
+                vyakar:allVyakar
+            });
+        })
+    }else{
+        return res.json({
+                message:'Not authorized user!'
+        })
+    }
+
+}
+
 module.exports = {
     createNewVyakar,
     login,
@@ -280,5 +295,6 @@ module.exports = {
     getProfile,
     updatePassword,
     getAllClientAdmin,
-    getAllClientUser
+    getAllClientUser,
+    getAllVyakar
 }

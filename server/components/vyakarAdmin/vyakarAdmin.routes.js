@@ -79,6 +79,10 @@ router.route('/getAllClientAdmin')
     /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
     .get(vyakarCntrl.getAllClientAdmin)
 
+router.route('/getAllVyakar')
+    /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
+    .get(vyakarCntrl.getAllVyakar)
+
 router.route('/updatePassword')
     /** PUT /api/secret/vyakarAdmin/updatePassword - Update Password vyakar admin */
     .put(validate(paramValidation.updatePassword),vyakarCntrl.updatePassword)
