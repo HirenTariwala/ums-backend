@@ -136,6 +136,7 @@ function vyakarLogin(req,res,next){
   const token =  jwt.sign(vyakar, config.jwtSecret, {
       expiresIn: config.jwtExpiresIn,
     });
+  vyakar.role = 3
   return res.json({
       token,
       user:vyakar

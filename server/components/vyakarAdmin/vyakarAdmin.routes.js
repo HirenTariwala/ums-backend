@@ -30,8 +30,18 @@ const paramValidation = {
       body: {
         id: Joi.number().required(),
       }
+    },
+    updatePassword : {
+      body: {
+        oldPassword: Joi.string().required(),
+        newPassword: Joi.string().required()
+      },
     }
 };
+
+router.route('/profile')
+    /** GET /api/secret/vyakarAdmin/profile - get vyakar admin profile */
+    .get(vyakarCntrl.getProfile)
 
 router.route('/createNewVyakar')
     /** POST /api/secret/vyakarAdmin/createNewVyakar - create New vyakar admin */
@@ -60,5 +70,9 @@ router.route('/getAllUser/:ClientId')
 router.route('/getAllCleintUser/:ClientId')
     /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
     .get(vyakarCntrl.getAllClientUserByClientId)
+
+router.route('/updatePassword')
+    /** PUT /api/secret/vyakarAdmin/updatePassword - Update Password vyakar admin */
+    .put(validate(paramValidation.updatePassword),vyakarCntrl.updatePassword)
 
 module.exports = router

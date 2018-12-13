@@ -17,7 +17,6 @@ function load(req, res, next, id) {
  * @returns {User}
  */
 function get(req, res) {
-  debugger;
   return res.json(req.user.safeModel());
 }
 
@@ -43,6 +42,7 @@ function update(req, res, next) {
   user.email = req.body.email;
   user.firstName = req.body.firstName || user.firstName;
   user.lastName = req.body.lastName || user.lastName;
+  user.role = req.body.role || user.role
 
   return user.save()
     .then(savedUser => res.json(savedUser.safeModel()))

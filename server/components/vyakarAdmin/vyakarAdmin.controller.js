@@ -203,6 +203,42 @@ function sendMail(req,subject,secret){
     });
 }
 
+function getProfile(req,res,next){
+    if(res.locals.session.role === "VykarAdmin"){
+    VyakarAdmins.getVyakarById(res.locals.session.id).then((foundVyakar)=>{
+        const vyakar = foundVyakar.safeModel();
+        vyakar.role = 3
+        return res.json(vyakar);
+    });
+    }else{
+        return res.json({
+                message:'Not authorized user!'
+        })
+    }
+}
+
+function updatePassword(req,res,next){
+    if(res.locals.session.role === "VykarAdmin"){
+    VyakarAdmins.getVyakarById(res.locals.session.id).then((foundVyakar)=>{
+        if (foundVyakar.validPassword(req.body.oldPassword)){
+            const genPass = foundVyakar.generatePassword(req.body.newPassword)
+            foundVyakar.password = genPass.hashPassword;
+            foundVyakar.salt = genPass.salt;
+            foundVyakar.save()
+            .then(savedUser => res.json(savedUser.safeModel()))
+            .catch(e => next(e));
+        }
+        else{
+            res.json({message:'old password not match'});
+        }
+    }).catch(e => next(e));
+    }else{
+        return res.json({
+                message:'Not authorized user!'
+        })
+    }
+}
+
 module.exports = {
     createNewVyakar,
     login,
@@ -212,5 +248,7 @@ module.exports = {
     getAllUserByClientId,
     getAllClientAdminByClientId,
     getAllClientUserByClientId,
-    createNewPasswordVyakar
+    createNewPasswordVyakar,
+    getProfile,
+    updatePassword
 }
