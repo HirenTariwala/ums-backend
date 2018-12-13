@@ -118,6 +118,15 @@ User.getAllByrole = function getAllByrole(role,ClientId) {
   });
 };
 
+User.getAllByroleWithoutClientId = function getAllByroleWithoutClientId(role) {
+  return this.findAll({
+    where: {
+      role,
+      isActive:1
+    },
+  });
+};
+
 User.getByEmailAndClientId = function getByEmailAndClientId(email,ClientId){
   return this.findOne({
     where: {

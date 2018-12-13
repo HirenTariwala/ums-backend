@@ -178,6 +178,34 @@ function createNewPasswordVyakar(req,res,next){
     
 }
 
+function getAllClientAdmin(req,res,next){
+    if(res.locals.session.role === "VykarAdmin"){
+        User.getAllByroleWithoutClientId(1).then((allAdmin)=>{
+            return res.json({
+                admins:allAdmin
+            })
+        });
+    }else{
+        return res.json({
+            message:'Not authorized user!'
+        });
+   }
+} 
+
+function getAllClientUser(req,res,next){
+    if(res.locals.session.role === "VykarAdmin"){
+        User.getAllByroleWithoutClientId(2).then((allUser)=>{
+            return res.json({
+                users:allUser
+            })
+        });
+    }else{
+        return res.json({
+            message:'Not authorized user!'
+        });
+   }
+} 
+
 function sendMail(req,subject,secret){
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -250,5 +278,7 @@ module.exports = {
     getAllClientUserByClientId,
     createNewPasswordVyakar,
     getProfile,
-    updatePassword
+    updatePassword,
+    getAllClientAdmin,
+    getAllClientUser
 }
