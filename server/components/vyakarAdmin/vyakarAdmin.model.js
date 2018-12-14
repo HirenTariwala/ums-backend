@@ -80,7 +80,12 @@ VyakarAdmins.getVyakarByEmailWithActive = function getVyakarByEmailWithActive(em
 }
 
 VyakarAdmins.getAllVyakar = function getAllVyakar(){
-    return this.findAll();
+    return this.findAll({
+        where:{
+            isDelete:0,
+            isActive:1
+        }
+    });
 }
 
 VyakarAdmins.prototype.generatePassword = function generatePassword(password) {

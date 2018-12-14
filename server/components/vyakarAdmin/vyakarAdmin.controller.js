@@ -86,7 +86,6 @@ function deleteVyakar(req,res,next){
         return Promise.reject(new APIError('User not exist!', httpStatus.CONFLICT, true));
     }
     foundVyakar.isDelete = 1;
-    foundVyakar.isActive = 0;
     foundVyakar.save();
     return res.json({
         success:"User delete successfully!",

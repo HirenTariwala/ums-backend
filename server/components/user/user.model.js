@@ -113,7 +113,8 @@ User.getAllByrole = function getAllByrole(role,ClientId) {
     where: {
       role,
       ClientId,
-      isActive:1
+      isActive:1,
+      isDelete:0
     },
   });
 };
@@ -122,7 +123,8 @@ User.getAllByroleWithoutClientId = function getAllByroleWithoutClientId(role) {
   return this.findAll({
     where: {
       role,
-      isActive:1
+      isActive:1,
+      isDelete:0
     },
   });
 };
@@ -141,7 +143,8 @@ User.getAllUserRolewiseByClientId = function getAllUserRolewiseByClientId(role,C
     where:{
       role,
       ClientId,
-      isActive : 1
+      isActive : 1,
+      isDelete:0
     }
   })
 }
@@ -150,7 +153,8 @@ User.getAllUserByClientId = function getAllUserByClientId(ClientId){
   return this.findAll({
     where :{
       ClientId,
-      isActive : 1
+      isActive : 1,
+      isDelete:0
     }
   })
 }
