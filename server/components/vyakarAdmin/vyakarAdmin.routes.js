@@ -27,7 +27,7 @@ const paramValidation = {
       }
     },
     deleteVyakar:{
-      body: {
+     params: {
         id: Joi.number().required(),
       }
     },
@@ -51,7 +51,7 @@ router.route('/updateVyakar')
     /** PUT /api/secret/vyakarAdmin/updateVyakar - Update vyakar admin */
     .put(validate(paramValidation.updateVyakar),vyakarCntrl.updateVyakar)  
     
-router.route('/deleteVyakar')
+router.route('/deleteVyakar/:id')
     /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
     .delete(validate(paramValidation.deleteVyakar),vyakarCntrl.deleteVyakar)
 

@@ -81,7 +81,7 @@ function updateVyakar(req,res,next){
 
 function deleteVyakar(req,res,next){
     if(res.locals.session.role === "VykarAdmin"){
-    VyakarAdmins.getVyakarById(req.body.id).then((foundVyakar)=>{
+    VyakarAdmins.getVyakarById(req.params.id).then((foundVyakar)=>{
     if(!foundVyakar){
         return Promise.reject(new APIError('User not exist!', httpStatus.CONFLICT, true));
     }
