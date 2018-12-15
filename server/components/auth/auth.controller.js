@@ -3,6 +3,7 @@ const httpStatus = require('http-status');
 const User = require('../user/user.model');
 const APIError = require('../../helpers/APIError');
 const config = require('../../config');
+const commonHelpere = require('../../helpers/commonHelper');
 const nodemailer = require('nodemailer');
 const VyakarAdmins = require('..//vyakarAdmin/vyakarAdmin.model');
 
@@ -59,12 +60,9 @@ function register(req, res, next) {
       return user.save();
     })
     .then((savedUser) => {
-      const token = jwt.sign(savedUser.safeModel(), config.jwtSecret, {
-        expiresIn: config.jwtExpiresIn,
-      });
+      const token = commonHelpere.encryptedString(JSON.stringify( { id : savedUser.safeModel().id } ));
       sendMail(req,'Verify your account',token);
       return res.json({
-          token,
           success:'Mail Sent'
        });
     })
@@ -77,12 +75,9 @@ function createLinkfornewPassword(req,res,next){
       if (!foundUser) {
         return Promise.reject(new APIError('User not found', httpStatus.CONFLICT, true));
       }
-      const token = jwt.sign(foundUser.safeModel(), config.jwtSecret, {
-        expiresIn: config.jwtExpiresIn,
-      });
+      const token = commonHelpere.encryptedString(JSON.stringify( { id : foundUser.safeModel().id}));
       sendMail(req,'Create new password',token);
       return res.json({
-        token,
         success:'Email Sent'
       });
     })
@@ -90,8 +85,9 @@ function createLinkfornewPassword(req,res,next){
 }
 
 function createNewPassword(req, res, next){
-  const user = jwt.verify(req.body.token, config.jwtSecret);
-  User.getByEmailRoleAndClientId(user.email,user.role,user.ClientId).then((foundUser)=>{
+  let user = commonHelpere.decryptedString(req.body.token);
+  user = JSON.parse(user);
+  User.get(user.id).then((foundUser)=>{
     const userObj = new User(foundUser);
     const genPass = userObj.generatePassword(req.body.newPassword)
     foundUser.password = genPass.hashPassword;
@@ -103,9 +99,10 @@ function createNewPassword(req, res, next){
 } 
 
 function createNewPasswordVyakar(req,res,next){
-  const vyakar = jwt.verify(req.body.token, config.jwtSecret);
+  let vyakar = commonHelpere.decryptedString(req.body.token);
+  vyakar = JSON.parse(vyakar);
   if(vyakar.role === "VykarAdmin"){
-    VyakarAdmins.getVyakarByEmail(vyakar.email).then((foundUser)=>{
+    VyakarAdmins.getVyakarById(vyakar.id).then((foundUser)=>{
         const userObj = new VyakarAdmins(foundUser);
         const genPass = userObj.generatePassword(req.body.newPassword)
         foundUser.password = genPass.hashPassword;
@@ -158,7 +155,7 @@ function sendMail(req,subject,secret){
     from: 'suhagTest@gmail.com',
     to: req.body.email,
     subject: subject,
-    html: `<a href='http://localhost:4200/forgotpassword/${secret}'>http://localhost:4200/forgotpassword/${secret}+</a>`,
+    html: `<a href='http://localhost:4200/createNewPassword/${secret}'>http://localhost:4200/createNewPassword/${secret}+</a>`,
   };
 
   transporter.sendMail(mailOptions, function(error, info){

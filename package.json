@@ -18,7 +18,7 @@
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "prestart": "yarn db:migrate",
     "db:migrate": "sequelize db:migrate",
-    "migration:create" : "sequelize migration:create --name"
+    "migration:create": "sequelize migration:create --name"
   },
   "repository": {
     "type": "git",
@@ -48,6 +48,7 @@
     "cookie-parser": "1.4.3",
     "cors": "2.8.4",
     "crypto": "1.0.1",
+    "cryptr": "4.0.2",
     "debug": "3.1.0",
     "dotenv": "6.0.0",
     "express": "4.16.3",

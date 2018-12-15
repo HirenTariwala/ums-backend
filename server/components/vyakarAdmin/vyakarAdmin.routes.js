@@ -36,6 +36,11 @@ const paramValidation = {
         oldPassword: Joi.string().required(),
         newPassword: Joi.string().required()
       },
+    },
+    createLinkforNewPassword:{
+        body: {
+           email:Joi.string().required()
+        },
     }
 };
 
@@ -56,35 +61,39 @@ router.route('/deleteVyakar/:id')
     .delete(validate(paramValidation.deleteVyakar),vyakarCntrl.deleteVyakar)
 
 router.route('/getAllClient')
-    /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
+    /** GET /api/secret/vyakarAdmin/getAllClient - getAllClient (get All Company) */
     .get(vyakarCntrl.getAllClient)
 
 router.route('/getAllClientAdmin/:ClientId')
-    /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
+    /** GET /api/secret/vyakarAdmin/getAllClientAdmin/:ClientId - Get all client admin based on company */
     .get(vyakarCntrl.getAllClientAdminByClientId)
   
 router.route('/getAllUser/:ClientId')
-    /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
+     /** GET /api/secret/vyakarAdmin/getAllUser/:ClientId - Get all user based on company */
     .get(vyakarCntrl.getAllUserByClientId)   
 
 router.route('/getAllCleintUser/:ClientId')
-    /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
+    /** GET /api/secret/vyakarAdmin/getAllCleintUser/:ClientId - Get all client user based on company */
     .get(vyakarCntrl.getAllClientUserByClientId)
 
 router.route('/getAllClientUser')
-    /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
+    /** GET /api/secret/vyakarAdmin/getAllCleintUser - Get all client user */
     .get(vyakarCntrl.getAllClientUser)
 
 router.route('/getAllClientAdmin')
-    /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
+     /** GET /api/secret/vyakarAdmin/getAllClientAdmin - Get all client admin */
     .get(vyakarCntrl.getAllClientAdmin)
 
 router.route('/getAllVyakar')
-    /** POST /api/secret/vyakarAdmin/deleteVykar - Delete vyakar admin */
+   /** GET /api/secret/vyakarAdmin/getAllVyakar - Get all vyakar admins */
     .get(vyakarCntrl.getAllVyakar)
 
 router.route('/updatePassword')
     /** PUT /api/secret/vyakarAdmin/updatePassword - Update Password vyakar admin */
     .put(validate(paramValidation.updatePassword),vyakarCntrl.updatePassword)
+
+router.route('/createLinkforNewPassword')
+    /** PUT /api/secret/vyakarAdmin/createLinkforNewPassword - Create reset password link for vyakar */
+    .put(validate(paramValidation.createLinkforNewPassword),vyakarCntrl.createLinkfornewPasswordVyakar)
 
 module.exports = router

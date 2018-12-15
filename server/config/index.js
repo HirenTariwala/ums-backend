@@ -29,6 +29,7 @@ const config = {
   mongooseDebug: envVars.MONGOOSE_DEBUG,
   jwtSecret: envVars.JWT_SECRET,
   jwtExpiresIn: envVars.JWT_EXPIRES_IN,
+  newPassSec: envVars.NEW_PASS_SEC,
   db: dbConfig[envVars.NODE_ENV],
 };
 

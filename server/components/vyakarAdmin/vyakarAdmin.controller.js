@@ -5,6 +5,7 @@ const APIError = require('../../helpers/APIError');
 const httpStatus = require('http-status');
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
+const commonHelpere = require('../../helpers/commonHelper');
 const nodemailer = require('nodemailer');
 
 
@@ -19,14 +20,11 @@ function createNewVyakar(req,res,next){
         vyakarAdmin.salt = 'WrongPassword';
         return vyakarAdmin.save();
         }).then((savedVyakar)=>{
-            const vyakar = savedVyakar.safeModel();
+            const vyakar = { id : savedVyakar.safeModel().id } ;
             vyakar.role = "VykarAdmin";
-            const token =  jwt.sign(vyakar, config.jwtSecret, {
-                expiresIn: config.jwtExpiresIn,
-            });
+            const token = commonHelpere.encryptedString(JSON.stringify(vyakar));
             sendMail(req,'Verify your account',token)
             res.json({
-                token,
                 success:'vyakarAdmin register succesfully',
             });
         }).catch(e => next(e))
@@ -205,6 +203,30 @@ function getAllClientUser(req,res,next){
    }
 } 
 
+function createLinkfornewPasswordVyakar(req,res,next){
+    if(res.locals.session.role === "VykarAdmin"){
+    VyakarAdmins.getVyakarByEmail(req.body.email)
+      .then((foundUser) => {
+        if (!foundUser) {
+          return Promise.reject(new APIError('User not found', httpStatus.CONFLICT, true));
+        }
+        const vyakar = { id :  foundUser.safeModel().id };
+        vyakar.role = "VykarAdmin";
+        const token = commonHelpere.encryptedString(JSON.stringify(vyakar));
+        sendMail(req,'Create new password',token);
+        return res.json({
+          success:'Email Sent'
+        });
+      })
+      .catch(e => next(e));
+    }else{
+        return res.json({
+            message:'Not authorized user!'
+        });
+   }
+  }
+  
+
 function sendMail(req,subject,secret){
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -218,7 +240,7 @@ function sendMail(req,subject,secret){
       from: 'suhagTest@gmail.com',
       to: req.body.email,
       subject: subject,
-      html: `<a href='http://localhost:4200/forgotpassword/${secret}'>http://localhost:4200/forgotpassword/${secret}+</a>`,
+      html: `<a href='http://localhost:4200/createNewPassword/${secret}'>http://localhost:4200/createNewPassword/${secret}+</a>`,
     };
   
     transporter.sendMail(mailOptions, function(error, info){
@@ -295,5 +317,6 @@ module.exports = {
     updatePassword,
     getAllClientAdmin,
     getAllClientUser,
-    getAllVyakar
+    getAllVyakar,
+    createLinkfornewPasswordVyakar
 }
