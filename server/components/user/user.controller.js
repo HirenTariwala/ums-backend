@@ -101,13 +101,13 @@ function updatePassword(req, res, next) {
 }
 
 function getAllAdmins (req,res,next) {
-   return User.getAllByrole(1,res.locals.session.ClientId).then((adminList)=>{
+   return User.getAllByrole(1,res.locals.session.ClientId,res.locals.session.id).then((adminList)=>{
         return res.json({"admins":adminList.map((o)=>o.safeModel())});
     })
 }
 
 function getAllClients (req,res,next) {
-   return User.getAllByrole(2,res.locals.session.ClientId).then((adminList)=>{
+   return User.getAllByrole(2,res.locals.session.ClientId,ClientId,0).then((adminList)=>{
         return res.json({"clients":adminList.map((o)=>o.safeModel())});
     })
 }

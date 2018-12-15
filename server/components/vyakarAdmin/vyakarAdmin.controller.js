@@ -23,7 +23,7 @@ function createNewVyakar(req,res,next){
             const vyakar = { id : savedVyakar.safeModel().id } ;
             vyakar.role = "VykarAdmin";
             const token = commonHelpere.encryptedString(JSON.stringify(vyakar));
-            sendMail(req,'Verify your account',token)
+            sendMail(req,'Verify your account',token,"vyakar")
             res.json({
                 success:'vyakarAdmin register succesfully',
             });
@@ -213,7 +213,7 @@ function createLinkfornewPasswordVyakar(req,res,next){
         const vyakar = { id :  foundUser.safeModel().id };
         vyakar.role = "VykarAdmin";
         const token = commonHelpere.encryptedString(JSON.stringify(vyakar));
-        sendMail(req,'Create new password',token);
+        sendMail(req,'Create new password',token,"vyakar");
         return res.json({
           success:'Email Sent'
         });
@@ -227,7 +227,7 @@ function createLinkfornewPasswordVyakar(req,res,next){
   }
   
 
-function sendMail(req,subject,secret){
+function sendMail(req,subject,secret,role){
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -237,10 +237,10 @@ function sendMail(req,subject,secret){
     });  
   
     const mailOptions = {
-      from: 'suhagTest@gmail.com',
+      from: 'vyakaradmin@no-reply.com',
       to: req.body.email,
       subject: subject,
-      html: `<a href='http://localhost:4200/createNewPassword/${secret}'>http://localhost:4200/createNewPassword/${secret}+</a>`,
+      html: `<a href='http://localhost:4200/createNewPassword/${role}/${secret}/'>http://localhost:4200/createNewPassword/${role}/${secret}</a>`,
     };
   
     transporter.sendMail(mailOptions, function(error, info){
@@ -290,7 +290,7 @@ function updatePassword(req,res,next){
 
 function getAllVyakar(req,res,next){
     if(res.locals.session.role === "VykarAdmin"){
-        VyakarAdmins.getAllVyakar().then((allVyakar)=>{
+        VyakarAdmins.getAllVyakar(res.locals.session.id).then((allVyakar)=>{
             return res.json({
                 vyakar:allVyakar
             });

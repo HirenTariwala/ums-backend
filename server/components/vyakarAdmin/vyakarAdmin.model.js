@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const db = require('../../config/db');
 const bcrypt = require('bcrypt-nodejs');
 const _ = require('lodash');
+const Op = Sequelize.Op;
 
 const VyakarAdminsSchema = {
    id : {
@@ -79,11 +80,14 @@ VyakarAdmins.getVyakarByEmailWithActive = function getVyakarByEmailWithActive(em
     })
 }
 
-VyakarAdmins.getAllVyakar = function getAllVyakar(){
+VyakarAdmins.getAllVyakar = function getAllVyakar(id){
     return this.findAll({
         where:{
             isDelete:0,
-            isActive:1
+            isActive:1,
+            id:{
+                [Op.ne] : id
+            }
         }
     });
 }

@@ -50,7 +50,7 @@ function login(req, res, next) {
  */
 function register(req, res, next) {
   const user = new User(req.body);
-  User.getByEmailRoleAndClientId(req.body.email,req.body.role,req.body.ClientId)
+  User.getByEmailAndClientId(req.body.email,req.body.ClientId)
     .then((foundUser) => {
       if (foundUser) {
         return Promise.reject(new APIError('User already exist!', httpStatus.CONFLICT, true));
@@ -61,7 +61,7 @@ function register(req, res, next) {
     })
     .then((savedUser) => {
       const token = commonHelpere.encryptedString(JSON.stringify( { id : savedUser.safeModel().id } ));
-      sendMail(req,'Verify your account',token);
+      sendMail(req,'Verify your account',token,"user");
       return res.json({
           success:'Mail Sent'
        });
@@ -76,7 +76,7 @@ function createLinkfornewPassword(req,res,next){
         return Promise.reject(new APIError('User not found', httpStatus.CONFLICT, true));
       }
       const token = commonHelpere.encryptedString(JSON.stringify( { id : foundUser.safeModel().id}));
-      sendMail(req,'Create new password',token);
+      sendMail(req,'Create new password',token,"user");
       return res.json({
         success:'Email Sent'
       });
@@ -142,7 +142,7 @@ function vyakarLogin(req,res,next){
   .catch(e => next(e))
 }
 
-function sendMail(req,subject,secret){
+function sendMail(req,subject,secret,role){
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -152,10 +152,10 @@ function sendMail(req,subject,secret){
   });  
 
   const mailOptions = {
-    from: 'suhagTest@gmail.com',
+    from: 'vyakaradmin@no-reply.com',
     to: req.body.email,
     subject: subject,
-    html: `<a href='http://localhost:4200/createNewPassword/${secret}'>http://localhost:4200/createNewPassword/${secret}+</a>`,
+    html: `<a href='http://localhost:4200/createNewPassword/${role}/${secret}/'>http://localhost:4200/createNewPassword/${role}/${secret}</a>`,
   };
 
   transporter.sendMail(mailOptions, function(error, info){

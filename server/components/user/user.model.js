@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt-nodejs');
 const _ = require('lodash');
 const db = require('../../config/db');
 const APIError = require('../../helpers/APIError');
+const Op = Sequelize.Op;
+
 
 /**
  * User Schema
@@ -108,13 +110,16 @@ User.getByEmail = function getByEmail(email) {
   });
 };
 
-User.getAllByrole = function getAllByrole(role,ClientId) {
+User.getAllByrole = function getAllByrole(role,ClientId,id) {
   return this.findAll({
     where: {
       role,
       ClientId,
       isActive:1,
-      isDelete:0
+      isDelete:0,
+      id:{
+          [Op.ne] : id
+      }
     },
   });
 };
