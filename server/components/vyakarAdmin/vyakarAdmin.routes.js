@@ -41,8 +41,17 @@ const paramValidation = {
         body: {
            email:Joi.string().required()
         },
+    },
+    loginAs : {
+        body: {
+            email:Joi.string().required()
+        },  
     }
 };
+
+router.route('/loginAs')
+    /** POST /api/secret/vyakarAdmin/loginAs - Login Client Uset/Admin using email */
+    .post(validate(paramValidation.loginAs),vyakarCntrl.loginAs)
 
 router.route('/profile')
     /** GET /api/secret/vyakarAdmin/profile - get vyakar admin profile */

@@ -225,6 +225,28 @@ function createLinkfornewPasswordVyakar(req,res,next){
         });
    }
   }
+
+  function loginAs(req,res,next){
+    if(res.locals.session.role === "VykarAdmin"){
+        User.getByEmail(req.body.email).then((foundUser)=>{
+            if(!foundUser){
+                return Promise.reject(new APIError('User not found', httpStatus.CONFLICT, true));
+            }
+            const user = foundUser.safeModel();
+            const token =  jwt.sign(user, config.jwtSecret, {
+                expiresIn: config.jwtExpiresIn,
+                });
+            return res.json({
+                token,
+                user
+            });
+        }).catch(e => next(e));;
+    }else{
+        return res.json({
+            message:'Not authorized user!'
+        });
+   }
+  }
   
 
 function sendMail(req,subject,secret,role){
@@ -303,6 +325,8 @@ function getAllVyakar(req,res,next){
 
 }
 
+
+
 module.exports = {
     createNewVyakar,
     login,
@@ -318,5 +342,6 @@ module.exports = {
     getAllClientAdmin,
     getAllClientUser,
     getAllVyakar,
-    createLinkfornewPasswordVyakar
+    createLinkfornewPasswordVyakar,
+    loginAs
 }
