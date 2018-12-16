@@ -14,28 +14,26 @@ npm install -g yarn
 ```sh
 yarn
 ```
+### Create new .env file in projectFolder
 
-### To run the project in development
-
-```sh
-yarn dev
+```
+    copy and paste all thing from .env.example file and do changes according
+    set NODE_ENV=production if you wants to run app on production mode
 ```
 
-### To build the project for production environment
+### Create one db 
 
-```sh
-yarn build
+```
+    Create one database name as 'VyakarMaster' and set your username and password of mysql database in /server/config/dbConfig.js file
 ```
 
-
-### Tests:
+### To run the project in development or production mode
 
 ```sh
-yarn test
-```
+yarn start
 
-## Database migration notes:
-
+after runing above script your server will start on localhost:<<PORT set on .env file>>
+``` 
 #### For creating database migrations
 
 ```sh
