@@ -107,7 +107,7 @@ function getAllAdmins (req,res,next) {
 }
 
 function getAllClients (req,res,next) {
-   return User.getAllByrole(2,res.locals.session.ClientId,ClientId,0).then((adminList)=>{
+   return User.getAllByrole(2,res.locals.session.ClientId,0).then((adminList)=>{
         return res.json({"clients":adminList.map((o)=>o.safeModel())});
     })
 }
